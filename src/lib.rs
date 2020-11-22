@@ -10,6 +10,8 @@ mod command;
 pub use command::Command;
 pub use command::ExecType;
 
+mod db;
+
 pub mod server;
 
 pub const MAX_CONNECTIONS: usize = 100;
