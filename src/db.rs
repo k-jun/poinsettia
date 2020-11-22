@@ -13,7 +13,7 @@ impl DB {
             store: Arc::new(Mutex::new(hp)),
         }
     }
-    pub fn set(&mut self, key: String, value: String) -> String {
+    pub fn set(&self, key: String, value: String) -> String {
         let mut store = self.store.lock().unwrap();
         match store.insert(key, value) {
             Some(s) => s.to_string(),
@@ -21,8 +21,8 @@ impl DB {
         }
     }
 
-    pub fn get(&mut self, key: String) -> String {
-        let mut store = self.store.lock().unwrap();
+    pub fn get(&self, key: String) -> String {
+        let store = self.store.lock().unwrap();
         match store.get(&key) {
             Some(s) => s.to_string(),
             None => String::new(),
@@ -32,7 +32,7 @@ impl DB {
 
 #[test]
 fn test_new() {
-    let db = DB::new();
+    let _ = DB::new();
 }
 
 #[test]
