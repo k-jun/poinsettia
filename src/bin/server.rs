@@ -13,10 +13,7 @@ pub async fn main() -> Result<()> {
 
     // Bind a TCP listener
     let listener = TcpListener::bind(&format!("127.0.0.1:{}", port)).await?;
-    // let mut signal_stream = signal(SignalKind::interrupt())?;
-    let mut signal_stream = signal(SignalKind::info())?;
-    // stream.recv().await;
-    server::run(listener, signal_stream).await
+    server::run(listener).await
 }
 
 #[derive(StructOpt, Debug)]
