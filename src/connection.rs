@@ -19,9 +19,8 @@ impl Connection {
 
             match self.stream.try_read(&mut self.buffer) {
                 Ok(0) => break,
-                Ok(n) => {
-                    data +=
-                        &(std::str::from_utf8(&self.buffer.to_vec())?.trim_matches(char::from(0)));
+                Ok(_) => {
+                    data += std::str::from_utf8(&self.buffer.to_vec())?.trim_matches(char::from(0));
                     continue;
                 }
                 Err(e) => {
