@@ -1,17 +1,18 @@
-use crate::{Command, Connection, ExecType, Result};
+use crate::{Command, Connection, ExecType, Result, DB};
 use tokio::sync::Semaphore;
 
 use std::sync::Arc;
 pub struct Handler {
-    // db: DB,
     connection: Connection,
+    db: DB,
     limit_connections: Arc<Semaphore>,
 }
 
 impl Handler {
-    pub fn new(connection: Connection, limit_connections: Arc<Semaphore>) -> Handler {
+    pub fn new(connection: Connection, db: DB, limit_connections: Arc<Semaphore>) -> Handler {
         Handler {
             connection,
+            db,
             limit_connections,
         }
     }
@@ -19,12 +20,16 @@ impl Handler {
     pub async fn run(&mut self) -> Result<()> {
         let raw = self.connection.read().await?;
         if let Some(command) = Command::parse(raw) {
-            match command.exec() {
-                ExecType::Get => (),
-                ExecType::Set => (),
+            let response = match command.exec() {
+                ExecType::Get => self.db.get(command.args()[1].clone()),
+                ExecType::Set => {
+                    let args = command.args();
+                    self.db.set(args[1].clone(), args[2].clone())
+                }
             };
+            println!("response: {}", response);
         } else {
-            // invalid command
+            println!("{}", "invalid command");
         }
         Ok(())
     }

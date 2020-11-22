@@ -1,23 +1,27 @@
 use std::collections::{BinaryHeap, HashMap, HashSet, VecDeque};
 use std::sync::{Arc, Mutex};
 
-struct DB {
+#[derive(Debug, Clone)]
+pub struct DB {
     store: Arc<Mutex<HashMap<String, String>>>,
 }
 
 impl DB {
-    fn new() -> DB {
+    pub fn new() -> DB {
         let hp = HashMap::new();
         DB {
             store: Arc::new(Mutex::new(hp)),
         }
     }
-    fn set(self, key: String, value: String) {
+    pub fn set(&mut self, key: String, value: String) -> String {
         let mut store = self.store.lock().unwrap();
-        store.insert(key, value);
+        match store.insert(key, value) {
+            Some(s) => s.to_string(),
+            None => String::new(),
+        }
     }
 
-    fn get(self, key: String) -> String {
+    pub fn get(&mut self, key: String) -> String {
         let mut store = self.store.lock().unwrap();
         match store.get(&key) {
             Some(s) => s.to_string(),

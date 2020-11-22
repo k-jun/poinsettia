@@ -1,17 +1,19 @@
-use crate::{Connection, Handler, Result};
+use crate::{Connection, Handler, Result, DB};
 use std::sync::Arc;
 use tokio::net::{TcpListener, TcpStream};
 use tokio::sync::Semaphore;
 
 pub struct Listener {
-    limit_connections: Arc<Semaphore>,
     listener: TcpListener,
+    db: DB,
+    limit_connections: Arc<Semaphore>,
 }
 
 impl Listener {
-    pub fn new(listener: TcpListener, limit_connections: Arc<Semaphore>) -> Listener {
+    pub fn new(listener: TcpListener, db: DB, limit_connections: Arc<Semaphore>) -> Listener {
         Listener {
             listener,
+            db,
             limit_connections,
         }
     }
@@ -23,8 +25,9 @@ impl Listener {
             let socket = self.accept().await?;
             let connection = Connection::new(socket);
             let limit_connections = self.limit_connections.clone();
+            let db = self.db.clone();
 
-            let mut handler = Handler::new(connection, limit_connections);
+            let mut handler = Handler::new(connection, db, limit_connections);
 
             tokio::spawn(async move {
                 if let Err(err) = handler.run().await {

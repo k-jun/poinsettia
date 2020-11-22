@@ -1,5 +1,5 @@
-use crate::{Result};
-#[derive(Debug)]
+use crate::Result;
+#[derive(Debug, Clone, Copy)]
 pub enum ExecType {
     Get,
     Set,
@@ -7,7 +7,7 @@ pub enum ExecType {
 
 #[derive(Debug)]
 pub struct Command {
-    exec: ExecType,
+    pub exec: ExecType,
     args: Vec<String>,
 }
 
@@ -39,11 +39,11 @@ impl Command {
         }
     }
 
-    pub fn exec(self) -> ExecType {
+    pub fn exec(&self) -> ExecType {
         self.exec
     }
 
-    pub fn args(self) -> Vec<String> {
-        self.args
+    pub fn args(&self) -> Vec<String> {
+        self.args.clone()
     }
 }
