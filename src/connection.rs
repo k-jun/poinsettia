@@ -12,6 +12,7 @@ impl Connection {
         let buffer = [0; 4 * 1024];
         Connection { stream, buffer }
     }
+
     pub async fn read(&mut self) -> Result<String> {
         let mut data = String::new();
         loop {
@@ -30,5 +31,25 @@ impl Connection {
         }
 
         Ok(data)
+    }
+
+    pub async fn write(&mut self, data: String) -> Result<()> {
+        let bytes = data.into_bytes();
+        loop {
+            self.stream.writable().await?;
+            match self.stream.try_write(&bytes) {
+                Ok(_) => {
+                    break;
+                }
+                Err(ref e) if e.kind() == std::io::ErrorKind::WouldBlock => {
+                    continue;
+                }
+                Err(e) => {
+                    return Err(e.into());
+                }
+            }
+        }
+
+        Ok(())
     }
 }

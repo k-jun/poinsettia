@@ -27,9 +27,10 @@ impl Handler {
                     self.db.set(args[1].clone(), args[2].clone())
                 }
             };
-            println!("response: {}", response);
+            self.connection.write(response).await?
         } else {
-            println!("{}", "invalid command");
+            let message = "invalid command".to_string();
+            self.connection.write(message).await?
         }
         Ok(())
     }
