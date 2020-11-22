@@ -1,0 +1,10 @@
+[package]
+name = "poinsettia"
+version = "0.1.0"
+authors = ["keijun.kumagai <keijun091221@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+structopt = "0.3.20"
+tokio = { version = "0.3.4", features = ["full"] }
+tracing-subscriber = "0.2.15"
