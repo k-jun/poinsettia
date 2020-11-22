@@ -37,11 +37,12 @@ impl Connection {
         let bytes = data.into_bytes();
         loop {
             self.stream.writable().await?;
+
             match self.stream.try_write(&bytes) {
                 Ok(_) => {
                     break;
                 }
-                Err(ref e) if e.kind() == std::io::ErrorKind::WouldBlock => {
+                Err(ref e) if e.kind() == WouldBlock => {
                     continue;
                 }
                 Err(e) => {
