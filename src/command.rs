@@ -21,9 +21,6 @@ impl Command {
             .split_whitespace()
             .map(|x| x.to_lowercase())
             .collect::<Vec<String>>();
-        println!("raw:{}", raw);
-        println!("raw.len():{}", raw.len());
-        println!("{:?}", args);
         if args.len() <= 1 {
             return None;
         }

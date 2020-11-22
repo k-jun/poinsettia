@@ -17,10 +17,8 @@ impl Handler {
     }
 
     pub async fn run(&mut self) -> Result<()> {
-        // println!("{}", );
         let raw = self.connection.read().await?;
         if let Some(command) = Command::parse(raw) {
-            println!("command:{:?}", command);
             match command.exec() {
                 ExecType::Get => (),
                 ExecType::Set => (),
