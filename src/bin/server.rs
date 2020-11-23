@@ -10,8 +10,9 @@ async fn main() -> Result<()> {
 
     let opt = Opt::from_args();
     let port = opt.port;
+    let host = opt.host;
 
-    server::run(format!("127.0.0.1:{}", port)).await
+    server::run(format!("{}:{}", host, port)).await
 }
 
 #[derive(StructOpt, Debug)]
@@ -19,4 +20,6 @@ async fn main() -> Result<()> {
 struct Opt {
     #[structopt(short, long, default_value = "6379")]
     port: String,
+    #[structopt(short, long, default_value = "127.0.0.1")]
+    host: String,
 }
