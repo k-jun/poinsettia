@@ -14,6 +14,7 @@ mod db;
 pub use db::DB;
 
 mod client;
+pub use client::Client;
 
 pub mod server;
 
