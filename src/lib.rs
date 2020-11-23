@@ -13,9 +13,12 @@ pub use command::ExecType;
 mod db;
 pub use db::DB;
 
+mod client;
+
 pub mod server;
 
 pub const MAX_CONNECTIONS: usize = 100;
+pub const BUFFER_SIZE: usize = 4 * 1024;
 
 pub type Error = Box<dyn std::error::Error + Send + Sync>;
 pub type Result<T> = std::result::Result<T, Error>;

@@ -1,15 +1,15 @@
-use crate::{Result, MAX_CONNECTIONS};
+use crate::{Result, BUFFER_SIZE, MAX_CONNECTIONS};
 use std::io::ErrorKind::WouldBlock;
 use tokio::net::{TcpListener, TcpStream};
 
 pub struct Connection {
     stream: TcpStream,
-    buffer: [u8; 4 * 1024],
+    buffer: [u8; BUFFER_SIZE],
 }
 
 impl Connection {
     pub fn new(stream: TcpStream) -> Connection {
-        let buffer = [0; 4 * 1024];
+        let buffer = [0; BUFFER_SIZE];
         Connection { stream, buffer }
     }
 
