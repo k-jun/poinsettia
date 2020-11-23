@@ -1,14 +1,7 @@
-use crate::Result;
-#[derive(Debug, Clone, Copy)]
-pub enum ExecType {
-    Get,
-    Set,
-}
-
-#[derive(Debug)]
-pub struct Command {
-    pub exec: ExecType,
-    args: Vec<String>,
+#[derive(Debug, PartialEq, Eq)]
+pub enum Command {
+    Get { key: String },
+    Set { key: String, value: String },
 }
 
 impl Command {
@@ -21,25 +14,48 @@ impl Command {
             return None;
         }
 
-        let exec = &args[0];
-        match exec.as_ref() {
-            "get" if args.len() == 2 => Some(Command {
-                exec: ExecType::Get,
-                args,
+        match (args[0].as_ref(), args.len()) {
+            ("get", 2) => Some(Command::Get {
+                key: args[1].to_string(),
             }),
-            "set" if args.len() == 3 => Some(Command {
-                exec: ExecType::Set,
-                args,
+            ("set", 3) => Some(Command::Set {
+                key: args[1].to_string(),
+                value: args[2].to_string(),
             }),
-            _ => None,
+            (_, _) => None,
         }
     }
+}
 
-    pub fn exec(&self) -> ExecType {
-        self.exec
+#[test]
+fn test_parse() {
+    struct TestCase {
+        in_str: String,
+        out_command: Option<Command>,
     }
 
-    pub fn args(&self) -> Vec<String> {
-        self.args.clone()
+    let cases = vec![
+        TestCase {
+            in_str: "get ipsa".to_string(),
+            out_command: Some(Command::Get {
+                key: "ipsa".to_string(),
+            }),
+        },
+        TestCase {
+            in_str: "set voluptatum dolor".to_string(),
+            out_command: Some(Command::Set {
+                key: "voluptatum".to_string(),
+                value: "dolor".to_string(),
+            }),
+        },
+        TestCase {
+            in_str: "invalid command".to_string(),
+            out_command: None,
+        },
+    ];
+
+    for c in cases {
+        let command = Command::parse(c.in_str);
+        assert_eq!(command, c.out_command);
     }
 }

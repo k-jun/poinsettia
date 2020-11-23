@@ -1,4 +1,4 @@
-use crate::{Command, ExecType, Connection, Result};
+use crate::{Command, Connection, Result};
 
 pub struct Client {
     connection: Connection,
@@ -13,7 +13,6 @@ impl Client {
     pub async fn get(&mut self, key: String) -> Result<String> {
         let command = format!("get {}", key);
         self.connection.write(command).await?;
-        
         let response = self.connection.read().await?;
         Ok(response)
     }

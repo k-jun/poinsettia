@@ -8,7 +8,6 @@ pub use handler::Handler;
 
 mod command;
 pub use command::Command;
-pub use command::ExecType;
 
 mod db;
 pub use db::DB;

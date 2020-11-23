@@ -1,4 +1,4 @@
-use crate::{Command, Connection, ExecType, Result, DB};
+use crate::{Command, Connection, Result, DB};
 use tokio::sync::Semaphore;
 
 use std::sync::Arc;
@@ -20,12 +20,9 @@ impl Handler {
     pub async fn run(&mut self) -> Result<()> {
         let raw = self.connection.read().await?;
         if let Some(command) = Command::parse(raw) {
-            let response = match command.exec() {
-                ExecType::Get => self.db.get(command.args()[1].clone()),
-                ExecType::Set => {
-                    let args = command.args();
-                    self.db.set(args[1].clone(), args[2].clone())
-                }
+            let response = match command {
+                Command::Get { key: k } => self.db.get(k),
+                Command::Set { key: k, value: v } => self.db.set(k, v),
             };
             self.connection.write(response).await?
         } else {
