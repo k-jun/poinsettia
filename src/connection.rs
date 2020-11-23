@@ -1,20 +1,21 @@
-use crate::{Result, BUFFER_SIZE, MAX_CONNECTIONS};
+use crate::{Result, BUFFER_SIZE};
 use std::io::ErrorKind::WouldBlock;
-use tokio::net::{TcpListener, TcpStream};
+use tokio::net::{TcpStream};
+use std::net::Shutdown;
 
 pub struct Connection {
     stream: TcpStream,
-    buffer: [u8; BUFFER_SIZE],
+    buffer: Vec<u8>,
 }
 
 impl Connection {
     pub fn new(stream: TcpStream) -> Connection {
-        let buffer = [0; BUFFER_SIZE];
+        let buffer = vec![0; BUFFER_SIZE];
         Connection { stream, buffer }
     }
     pub async fn connect(address: String) -> Result<Connection> {
         let stream = TcpStream::connect(address).await?;
-        let buffer = [0; BUFFER_SIZE];
+        let buffer = vec![0; BUFFER_SIZE];
 
         Ok(Connection { stream, buffer })
     }
@@ -23,11 +24,11 @@ impl Connection {
         let mut data = String::new();
         loop {
             self.stream.readable().await?;
-
             match self.stream.try_read(&mut self.buffer) {
                 Ok(0) => break,
-                Ok(_) => {
-                    data += std::str::from_utf8(&self.buffer.to_vec())?.trim_matches(char::from(0));
+                Ok(n) => {
+                    self.buffer.truncate(n);
+                    data += std::str::from_utf8(&self.buffer)?;
                     continue;
                 }
                 Err(e) => {
@@ -43,7 +44,6 @@ impl Connection {
         let bytes = data.into_bytes();
         loop {
             self.stream.writable().await?;
-
             match self.stream.try_write(&bytes) {
                 Ok(_) => {
                     break;
@@ -60,3 +60,9 @@ impl Connection {
         Ok(())
     }
 }
+
+// impl Drop for Connection {
+//     fn drop(&mut self) {
+//         self.stream.shutdown(Shutdown::Both).unwrap();
+//     }
+// }
