@@ -1,18 +1,26 @@
 use poinsettia::{server, Result};
-
 use structopt::StructOpt;
-use tokio::net::TcpListener;
-use tokio::signal::unix::{signal, SignalKind};
+use tokio::signal;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    tracing_subscriber::fmt::try_init()?;
-
     let opt = Opt::from_args();
     let port = opt.port;
     let host = opt.host;
+    println!("listen on {}:{}", host, port);
 
-    server::run(format!("{}:{}", host, port)).await
+    let shutdown = signal::ctrl_c();
+    tokio::select! {
+        res = server::run(format!("{}:{}", host, port)) => {
+            if let Err(_) = res {
+                println!("failed to accept");
+            }
+        }
+        _ = shutdown => {
+            println!("shutdown...")
+        }
+    }
+    Ok(())
 }
 
 #[derive(StructOpt, Debug)]
