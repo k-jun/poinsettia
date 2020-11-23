@@ -11,10 +11,6 @@ pub struct Command {
     args: Vec<String>,
 }
 
-struct CommandError {
-    message: String,
-}
-
 impl Command {
     pub fn parse(raw: String) -> Option<Command> {
         let args = raw
