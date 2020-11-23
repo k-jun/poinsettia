@@ -1,4 +1,4 @@
-use crate::{Command, Connection, Result};
+use crate::{Connection, Result};
 
 pub struct Client {
     connection: Connection,

@@ -1,6 +1,6 @@
 use crate::{Listener, Result, DB, MAX_CONNECTIONS};
 use std::sync::Arc;
-use tokio::net::{TcpListener, TcpStream};
+use tokio::net::TcpListener;
 use tokio::sync::Semaphore;
 
 pub async fn run(address: String) -> Result<()> {
