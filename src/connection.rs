@@ -12,6 +12,12 @@ impl Connection {
         let buffer = [0; BUFFER_SIZE];
         Connection { stream, buffer }
     }
+    pub async fn connect(address: String) -> Result<Connection> {
+        let stream = TcpStream::connect(address).await?;
+        let buffer = [0; BUFFER_SIZE];
+
+        Ok(Connection { stream, buffer })
+    }
 
     pub async fn read(&mut self) -> Result<String> {
         let mut data = String::new();
