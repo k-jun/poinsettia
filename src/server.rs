@@ -3,7 +3,8 @@ use std::sync::Arc;
 use tokio::net::{TcpListener, TcpStream};
 use tokio::sync::Semaphore;
 
-pub async fn run(listener: TcpListener) -> Result<()> {
+pub async fn run(address: String) -> Result<()> {
+    let listener = TcpListener::bind(&address).await?;
     let limit_connections = Arc::new(Semaphore::new(MAX_CONNECTIONS));
     let db = DB::new();
 

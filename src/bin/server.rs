@@ -11,9 +11,7 @@ async fn main() -> Result<()> {
     let opt = Opt::from_args();
     let port = opt.port;
 
-    // Bind a TCP listener
-    let listener = TcpListener::bind(&format!("127.0.0.1:{}", port)).await?;
-    server::run(listener).await
+    server::run(format!("127.0.0.1:{}", port)).await
 }
 
 #[derive(StructOpt, Debug)]
