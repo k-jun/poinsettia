@@ -4,14 +4,14 @@ stupidly simple in memory key value store
 
 ## Get Started
 
-server
+### server
 
 ```sh
 docker build -t poinsettia .
 docker run -p 6379:6379 poinsettia
 ```
 
-client
+### client
 
 via cli
 
