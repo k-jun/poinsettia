@@ -5,7 +5,7 @@ use tokio::net::TcpListener;
 use tokio::signal::unix::{signal, SignalKind};
 
 #[tokio::main]
-pub async fn main() -> Result<()> {
+async fn main() -> Result<()> {
     tracing_subscriber::fmt::try_init()?;
 
     let opt = Opt::from_args();
