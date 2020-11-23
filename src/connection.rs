@@ -30,6 +30,9 @@ impl Connection {
                     self.buffer.truncate(n);
                     data += std::str::from_utf8(&self.buffer)?;
                     continue;
+                },
+                Err(ref e) if e.kind() == WouldBlock => {
+                    continue;
                 }
                 Err(e) => {
                     return Err(e.into());
@@ -56,13 +59,7 @@ impl Connection {
                 }
             }
         }
-
+        self.stream.shutdown(Shutdown::Write)?;
         Ok(())
     }
 }
-
-// impl Drop for Connection {
-//     fn drop(&mut self) {
-//         self.stream.shutdown(Shutdown::Both).unwrap();
-//     }
-// }
