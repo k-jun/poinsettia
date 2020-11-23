@@ -1,7 +1,7 @@
 use crate::{Result, BUFFER_SIZE};
 use std::io::ErrorKind::WouldBlock;
-use tokio::net::{TcpStream};
 use std::net::Shutdown;
+use tokio::net::TcpStream;
 
 pub struct Connection {
     stream: TcpStream,
@@ -30,7 +30,7 @@ impl Connection {
                     self.buffer.truncate(n);
                     data += std::str::from_utf8(&self.buffer)?;
                     continue;
-                },
+                }
                 Err(ref e) if e.kind() == WouldBlock => {
                     continue;
                 }

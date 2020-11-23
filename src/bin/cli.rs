@@ -1,4 +1,4 @@
-use poinsettia::{server, Result, Client};
+use poinsettia::{server, Client, Result};
 use structopt::StructOpt;
 
 #[tokio::main]
@@ -9,8 +9,8 @@ async fn main() -> Result<()> {
     let mut client = Client::connect(address).await?;
 
     let response = match cli.command {
-        Command::Get{key: k} => client.get(k).await?,
-        Command::Set{key: k, value: v} => client.set(k,v).await?
+        Command::Get { key: k } => client.get(k).await?,
+        Command::Set { key: k, value: v } => client.set(k, v).await?,
     };
 
     println!("response: {}", response);
