@@ -1,4 +1,4 @@
-use poinsettia::{server, Client, Result};
+use poinsettia::{Client, Result};
 use structopt::StructOpt;
 
 #[tokio::main]
