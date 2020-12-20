@@ -31,9 +31,6 @@ impl Connection {
                     data += std::str::from_utf8(&self.buffer)?;
                     continue;
                 }
-                Err(ref e) if e.kind() == WouldBlock => {
-                    continue;
-                }
                 Err(e) => {
                     return Err(e.into());
                 }
@@ -50,9 +47,6 @@ impl Connection {
             match self.stream.try_write(&bytes) {
                 Ok(_) => {
                     break;
-                }
-                Err(ref e) if e.kind() == WouldBlock => {
-                    continue;
                 }
                 Err(e) => {
                     return Err(e.into());
